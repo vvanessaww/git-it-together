@@ -1,0 +1,43 @@
+{
+  "name": "git-it-together",
+  "version": "1.0.0",
+  "description": "Interactive CLI tutorial for learning Git in AI-assisted workflows",
+  "type": "module",
+  "bin": {
+    "git-it-together": "./dist/cli.js"
+  },
+  "scripts": {
+    "dev": "tsx src/cli.tsx",
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "git",
+    "tutorial",
+    "learn",
+    "cli",
+    "interactive",
+    "ai",
+    "beginner"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "figures": "^6.1.0",
+    "ink": "^5.2.0",
+    "ink-select-input": "^7.0.0",
+    "ink-text-input": "^7.0.0",
+    "react": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.6",
+    "@types/react": "^19.0.6",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
