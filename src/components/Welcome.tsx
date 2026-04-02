@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Text } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import chalk from 'chalk';
 import figures from 'figures';
 
@@ -15,18 +15,12 @@ export default function Welcome({ onContinue }: WelcomeProps) {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
+  useInput((_input, key) => {
     if (!ready) return;
-
-    const handleKeyPress = () => {
+    if (key.return) {
       onContinue();
-    };
-
-    process.stdin.on('data', handleKeyPress);
-    return () => {
-      process.stdin.off('data', handleKeyPress);
-    };
-  }, [ready, onContinue]);
+    }
+  });
 
   return (
     <Box flexDirection="column" padding={2} borderStyle="round" borderColor="cyan">
@@ -73,7 +67,7 @@ export default function Welcome({ onContinue }: WelcomeProps) {
       {ready && (
         <Box marginTop={2}>
           <Text dimColor>
-            Press {chalk.cyan('any key')} to start...
+            Press {chalk.cyan('Enter')} to start...
           </Text>
         </Box>
       )}

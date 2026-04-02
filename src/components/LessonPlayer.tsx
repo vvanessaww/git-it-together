@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Text } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import chalk from 'chalk';
 import figures from 'figures';
 import KnowledgeCheck from './KnowledgeCheck.js';
+import CommandExercise from './CommandExercise.js';
+import ScenarioExercise from './ScenarioExercise.js';
+import ProgressBar from './ProgressBar.js';
 import type { Lesson } from '../lessons/types.js';
 
 interface LessonPlayerProps {
@@ -11,95 +14,89 @@ interface LessonPlayerProps {
 }
 
 export default function LessonPlayer({ lesson, onComplete }: LessonPlayerProps) {
-  const [step, setStep] = useState<'intro' | 'content' | 'check'>('intro');
+  const [stepIndex, setStepIndex] = useState(0);
   const [showContinue, setShowContinue] = useState(false);
 
+  const totalSteps = lesson.steps.length;
+  const currentStep = lesson.steps[stepIndex];
+
   React.useEffect(() => {
-    if (step === 'intro') {
-      const timer = setTimeout(() => setShowContinue(true), 800);
+    setShowContinue(false);
+    if (currentStep?.type === 'content') {
+      const timer = setTimeout(() => setShowContinue(true), 600);
       return () => clearTimeout(timer);
     }
-  }, [step]);
+  }, [stepIndex, currentStep?.type]);
 
-  React.useEffect(() => {
-    if (!showContinue) return;
+  useInput((_input, key) => {
+    if (currentStep?.type !== 'content') return;
+    if (!showContinue || !key.return) return;
+    advance();
+  });
 
-    const handleKeyPress = () => {
-      if (step === 'intro') {
-        setStep('content');
-        setShowContinue(false);
-        setTimeout(() => setShowContinue(true), 1000);
-      } else if (step === 'content') {
-        setStep('check');
-      }
-    };
-
-    process.stdin.on('data', handleKeyPress);
-    return () => {
-      process.stdin.off('data', handleKeyPress);
-    };
-  }, [step, showContinue]);
-
-  const handleCheckComplete = () => {
-    onComplete();
+  const advance = () => {
+    if (stepIndex + 1 >= totalSteps) {
+      onComplete();
+    } else {
+      setStepIndex(prev => prev + 1);
+    }
   };
 
-  if (step === 'intro') {
-    return (
-      <Box flexDirection="column" padding={1}>
-        <Box marginBottom={1}>
-          <Text bold color="cyan">
-            {figures.pointer} {lesson.title}
-          </Text>
-        </Box>
-        <Box>
-          <Text>{lesson.description}</Text>
-        </Box>
-        {showContinue && (
-          <Box marginTop={2}>
-            <Text dimColor>Press {chalk.cyan('any key')} to continue...</Text>
-          </Box>
-        )}
-      </Box>
-    );
-  }
-
-  if (step === 'content') {
-    return (
-      <Box flexDirection="column" padding={1}>
-        <Box marginBottom={1}>
-          <Text bold color="yellow">
-            {figures.info} {lesson.contentTitle || 'What You Need to Know'}
-          </Text>
-        </Box>
-        {lesson.content.map((item, index) => (
-          <Box key={index} marginBottom={1} flexDirection="column">
-            <Text bold>{item.title}</Text>
-            <Box paddingLeft={2}>
-              <Text dimColor>{item.explanation}</Text>
-            </Box>
-            {item.command && (
-              <Box paddingLeft={2} marginTop={1}>
-                <Text color="green">
-                  $ {item.command}
-                </Text>
-              </Box>
-            )}
-          </Box>
-        ))}
-        {showContinue && (
-          <Box marginTop={2}>
-            <Text dimColor>Press {chalk.cyan('any key')} for knowledge check...</Text>
-          </Box>
-        )}
-      </Box>
-    );
+  if (!currentStep) {
+    onComplete();
+    return null;
   }
 
   return (
-    <KnowledgeCheck
-      scenario={lesson.knowledgeCheck}
-      onComplete={handleCheckComplete}
-    />
+    <Box flexDirection="column">
+      <ProgressBar
+        current={stepIndex}
+        total={totalSteps}
+        lessonTitle={lesson.title}
+        difficulty={lesson.difficulty}
+      />
+
+      {currentStep.type === 'content' && (
+        <Box flexDirection="column" padding={1}>
+          <Box marginBottom={1}>
+            <Text bold color="yellow">
+              {figures.info} {currentStep.title}
+            </Text>
+          </Box>
+          {currentStep.items.map((item, index) => (
+            <Box key={index} marginBottom={1} flexDirection="column">
+              <Text bold>{item.title}</Text>
+              <Box paddingLeft={2}>
+                <Text dimColor>{item.explanation}</Text>
+              </Box>
+              {item.command && (
+                <Box paddingLeft={2} marginTop={0}>
+                  <Text color="green">
+                    $ {item.command}
+                  </Text>
+                </Box>
+              )}
+            </Box>
+          ))}
+          {showContinue && (
+            <Box marginTop={1}>
+              <Text dimColor>Press {chalk.cyan('Enter')} to continue...</Text>
+            </Box>
+          )}
+        </Box>
+      )}
+
+      {currentStep.type === 'command-exercise' && (
+        <CommandExercise exercise={currentStep} onComplete={advance} />
+      )}
+
+      {currentStep.type === 'multiple-choice' && (
+        <KnowledgeCheck exercise={currentStep} onComplete={advance} />
+      )}
+
+      {currentStep.type === 'scenario' && (
+        <ScenarioExercise exercise={currentStep} onComplete={advance} />
+      )}
+    </Box>
   );
 }

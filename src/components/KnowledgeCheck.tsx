@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Box, Text } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import chalk from 'chalk';
 import figures from 'figures';
-import type { KnowledgeCheckScenario } from '../lessons/types.js';
+import type { MultipleChoiceStep } from '../lessons/types.js';
 
 interface KnowledgeCheckProps {
-  scenario: KnowledgeCheckScenario;
+  exercise: MultipleChoiceStep;
   onComplete: () => void;
 }
 
-export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckProps) {
+export default function KnowledgeCheck({ exercise, onComplete }: KnowledgeCheckProps) {
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showContinue, setShowContinue] = useState(false);
@@ -18,23 +18,17 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
   const handleSelect = (item: { value: number }) => {
     setSelectedAnswer(item.value);
     setAnswered(true);
-    setTimeout(() => setShowContinue(true), 1500);
+    setTimeout(() => setShowContinue(true), 1000);
   };
 
-  React.useEffect(() => {
+  useInput((_input, key) => {
     if (!showContinue) return;
-
-    const handleKeyPress = () => {
+    if (key.return) {
       onComplete();
-    };
+    }
+  });
 
-    process.stdin.on('data', handleKeyPress);
-    return () => {
-      process.stdin.off('data', handleKeyPress);
-    };
-  }, [showContinue, onComplete]);
-
-  const isCorrect = selectedAnswer === scenario.correctAnswer;
+  const isCorrect = selectedAnswer === exercise.correctAnswer;
 
   return (
     <Box flexDirection="column" padding={1}>
@@ -45,7 +39,7 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
       </Box>
 
       <Box marginBottom={2} paddingX={2} borderStyle="round" borderColor="yellow">
-        <Text italic>{scenario.situation}</Text>
+        <Text italic>{exercise.situation}</Text>
       </Box>
 
       {!answered ? (
@@ -54,7 +48,7 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
             <Text bold>What should you do?</Text>
           </Box>
           <SelectInput
-            items={scenario.options.map((opt, idx) => ({
+            items={exercise.options.map((opt, idx) => ({
               label: opt,
               value: idx,
             }))}
@@ -67,7 +61,7 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
             <Text bold>Your answer:</Text>
             <Box paddingLeft={2}>
               <Text color={isCorrect ? 'green' : 'red'}>
-                {isCorrect ? figures.tick : figures.cross} {scenario.options[selectedAnswer!]}
+                {isCorrect ? figures.tick : figures.cross} {exercise.options[selectedAnswer!]}
               </Text>
             </Box>
           </Box>
@@ -83,7 +77,7 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
               <Text color="green" bold>
                 {figures.tick} Correct!
               </Text>
-              <Text dimColor>{scenario.explanation}</Text>
+              <Text dimColor>{exercise.explanation}</Text>
             </Box>
           ) : (
             <Box flexDirection="column">
@@ -97,11 +91,11 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
                 <Text color="red" bold>
                   {figures.cross} Not quite...
                 </Text>
-                <Text dimColor>{scenario.explanation}</Text>
+                <Text dimColor>{exercise.explanation}</Text>
               </Box>
               <Box paddingX={2}>
                 <Text>
-                  The correct answer is: <Text bold color="green">{scenario.options[scenario.correctAnswer]}</Text>
+                  The correct answer is: <Text bold color="green">{exercise.options[exercise.correctAnswer]}</Text>
                 </Text>
               </Box>
             </Box>
@@ -109,7 +103,7 @@ export default function KnowledgeCheck({ scenario, onComplete }: KnowledgeCheckP
 
           {showContinue && (
             <Box marginTop={2}>
-              <Text dimColor>Press {chalk.cyan('any key')} to continue...</Text>
+              <Text dimColor>Press {chalk.cyan('Enter')} to continue...</Text>
             </Box>
           )}
         </>
