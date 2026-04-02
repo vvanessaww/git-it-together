@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import chalk from 'chalk';
 import type { Difficulty } from '../lessons/types.js';
+import type { Mood } from './PlantBuddy.js';
 import BitBuddy from './PlantBuddy.js';
 
 interface ProgressBarProps {
@@ -10,6 +11,8 @@ interface ProgressBarProps {
   lessonTitle: string;
   difficulty: Difficulty;
   overallProgress: number;
+  bitMood?: Mood;
+  bitMessage?: string;
 }
 
 const difficultyColors: Record<Difficulty, string> = {
@@ -24,7 +27,7 @@ const difficultyLabels: Record<Difficulty, string> = {
   advanced: 'Advanced',
 };
 
-export default function ProgressBar({ current, total, lessonTitle, difficulty, overallProgress }: ProgressBarProps) {
+export default function ProgressBar({ current, total, lessonTitle, difficulty, overallProgress, bitMood = 'idle', bitMessage = '' }: ProgressBarProps) {
   const progress = total > 0 ? current / total : 0;
   const percent = Math.round(progress * 100);
   const barWidth = 20;
@@ -49,7 +52,7 @@ export default function ProgressBar({ current, total, lessonTitle, difficulty, o
         </Box>
       </Box>
       <Box marginLeft={2}>
-        <BitBuddy progress={overallProgress} mood="idle" message="" />
+        <BitBuddy progress={overallProgress} mood={bitMood} message={bitMessage} />
       </Box>
     </Box>
   );

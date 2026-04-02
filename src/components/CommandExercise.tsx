@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import chalk from 'chalk';
 import figures from 'figures';
-import BitBuddy from './PlantBuddy.js';
 import type { CommandExerciseStep } from '../lessons/types.js';
+import type { Mood } from './PlantBuddy.js';
 
 interface CommandExerciseProps {
   exercise: CommandExerciseStep;
   onComplete: () => void;
   overallProgress?: number;
+  onMoodChange?: (mood: Mood, message: string) => void;
 }
 
 function normalizeCommand(cmd: string): string {
@@ -21,11 +22,16 @@ function checkAnswer(input: string, acceptedAnswers: readonly string[]): boolean
   return acceptedAnswers.some(answer => normalizeCommand(answer) === normalized);
 }
 
-export default function CommandExercise({ exercise, onComplete, overallProgress = 0 }: CommandExerciseProps) {
+export default function CommandExercise({ exercise, onComplete, onMoodChange }: CommandExerciseProps) {
   const [input, setInput] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
   const [showingWrong, setShowingWrong] = useState(false);
+
+  // Set initial mood
+  useEffect(() => {
+    onMoodChange?.('idle', "Let's see...");
+  }, [onMoodChange]);
 
   useInput((_input, key) => {
     if (solved && key.return) {
@@ -38,10 +44,16 @@ export default function CommandExercise({ exercise, onComplete, overallProgress 
 
     if (checkAnswer(value, exercise.acceptedAnswers)) {
       setSolved(true);
+      const msg = attempts === 0 ? 'Perfect! First try!' : attempts === 1 ? 'Nice one!' : 'Got it!';
+      const mood: Mood = attempts === 0 ? 'amazed' : 'happy';
+      onMoodChange?.(mood, msg);
     } else {
-      setAttempts(prev => prev + 1);
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
       setShowingWrong(true);
       setInput('');
+      const msg = newAttempts === 1 ? 'Not quite - try again!' : newAttempts === 2 ? "Getting closer!" : 'Check the hint!';
+      onMoodChange?.('wrong', msg);
     }
   };
 
@@ -76,12 +88,10 @@ export default function CommandExercise({ exercise, onComplete, overallProgress 
           </Box>
 
           {showingWrong && (
-            <Box marginBottom={1}>
-              <BitBuddy
-                progress={overallProgress}
-                mood="wrong"
-                message={attempts === 1 ? 'Not quite - try again!' : attempts === 2 ? "You're getting closer!" : 'Check the hint!'}
-              />
+            <Box marginBottom={1} paddingLeft={2}>
+              <Text color="red">
+                {figures.cross} {attempts === 1 ? 'Not quite - give it another shot!' : attempts === 2 ? "You're getting closer!" : 'Almost! Check the hint below.'}
+              </Text>
             </Box>
           )}
 
@@ -109,19 +119,16 @@ export default function CommandExercise({ exercise, onComplete, overallProgress 
             </Text>
           </Box>
 
-          <BitBuddy
-            progress={overallProgress}
-            mood={attempts === 0 ? 'amazed' : 'happy'}
-            message={attempts === 0 ? 'Perfect! First try!' : attempts === 1 ? 'Nice one!' : 'Got it! Practice makes perfect.'}
-          />
-
           <Box
-            marginTop={1}
+            marginBottom={1}
             paddingX={2}
             borderStyle="round"
             borderColor="green"
             flexDirection="column"
           >
+            <Text color="green" bold>
+              {figures.tick} {attempts === 0 ? 'Perfect! First try!' : attempts === 1 ? 'Nice one!' : 'Got it! Practice makes perfect.'}
+            </Text>
             <Text dimColor>{exercise.explanation}</Text>
           </Box>
 

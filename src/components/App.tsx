@@ -92,6 +92,7 @@ export default function App() {
       <LessonPlayer
         lesson={filteredLessons[selectedLesson]}
         onComplete={handleLessonComplete}
+        onBack={() => setScreen('menu')}
         overallProgress={overallProgress}
       />
     );

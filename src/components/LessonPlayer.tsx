@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Box, Text, useInput } from 'ink';
 import chalk from 'chalk';
 import figures from 'figures';
@@ -8,23 +8,29 @@ import ScenarioExercise from './ScenarioExercise.js';
 import ProgressBar from './ProgressBar.js';
 import LessonComplete from './LessonComplete.js';
 import type { Lesson } from '../lessons/types.js';
+import type { Mood } from './PlantBuddy.js';
 
 interface LessonPlayerProps {
   lesson: Lesson;
   onComplete: () => void;
+  onBack: () => void;
   overallProgress: number;
 }
 
-export default function LessonPlayer({ lesson, onComplete, overallProgress }: LessonPlayerProps) {
+export default function LessonPlayer({ lesson, onComplete, onBack, overallProgress }: LessonPlayerProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [showContinue, setShowContinue] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [bitMood, setBitMood] = useState<Mood>('idle');
+  const [bitMessage, setBitMessage] = useState('');
 
   const totalSteps = lesson.steps.length;
   const currentStep = lesson.steps[stepIndex];
 
   React.useEffect(() => {
     setShowContinue(false);
+    setBitMood('idle');
+    setBitMessage('');
     if (currentStep?.type === 'content') {
       const timer = setTimeout(() => setShowContinue(true), 600);
       return () => clearTimeout(timer);
@@ -32,6 +38,11 @@ export default function LessonPlayer({ lesson, onComplete, overallProgress }: Le
   }, [stepIndex, currentStep?.type]);
 
   useInput((_input, key) => {
+    // Escape to go back to menu
+    if (key.escape) {
+      onBack();
+      return;
+    }
     if (currentStep?.type !== 'content') return;
     if (!showContinue || !key.return) return;
     advance();
@@ -44,6 +55,11 @@ export default function LessonPlayer({ lesson, onComplete, overallProgress }: Le
       setStepIndex(prev => prev + 1);
     }
   };
+
+  const handleMoodChange = useCallback((mood: Mood, message: string) => {
+    setBitMood(mood);
+    setBitMessage(message);
+  }, []);
 
   if (finished) {
     return (
@@ -68,6 +84,8 @@ export default function LessonPlayer({ lesson, onComplete, overallProgress }: Le
         lessonTitle={lesson.title}
         difficulty={lesson.difficulty}
         overallProgress={overallProgress}
+        bitMood={bitMood}
+        bitMessage={bitMessage}
       />
 
       {currentStep.type === 'content' && (
@@ -94,23 +112,45 @@ export default function LessonPlayer({ lesson, onComplete, overallProgress }: Le
           ))}
           {showContinue && (
             <Box marginTop={1}>
-              <Text dimColor>Press {chalk.cyan('Enter')} to continue...</Text>
+              <Text dimColor>Press {chalk.cyan('Enter')} to continue  {chalk.dim('|')}  {chalk.cyan('Esc')} to go back</Text>
             </Box>
           )}
         </Box>
       )}
 
       {currentStep.type === 'command-exercise' && (
-        <CommandExercise key={stepIndex} exercise={currentStep} onComplete={advance} />
+        <CommandExercise
+          key={stepIndex}
+          exercise={currentStep}
+          onComplete={advance}
+          overallProgress={overallProgress}
+          onMoodChange={handleMoodChange}
+        />
       )}
 
       {currentStep.type === 'multiple-choice' && (
-        <KnowledgeCheck key={stepIndex} exercise={currentStep} onComplete={advance} />
+        <KnowledgeCheck
+          key={stepIndex}
+          exercise={currentStep}
+          onComplete={advance}
+          overallProgress={overallProgress}
+          onMoodChange={handleMoodChange}
+        />
       )}
 
       {currentStep.type === 'scenario' && (
-        <ScenarioExercise key={stepIndex} exercise={currentStep} onComplete={advance} />
+        <ScenarioExercise
+          key={stepIndex}
+          exercise={currentStep}
+          onComplete={advance}
+          overallProgress={overallProgress}
+          onMoodChange={handleMoodChange}
+        />
       )}
+
+      <Box paddingX={1} marginTop={1}>
+        <Text dimColor>Press {chalk.cyan('Esc')} to exit lesson</Text>
+      </Box>
     </Box>
   );
 }

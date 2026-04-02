@@ -1,25 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useState } from 'react';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import chalk from 'chalk';
 import figures from 'figures';
-import BitBuddy from './PlantBuddy.js';
 import type { MultipleChoiceStep } from '../lessons/types.js';
+import type { Mood } from './PlantBuddy.js';
 
 interface KnowledgeCheckProps {
   exercise: MultipleChoiceStep;
   onComplete: () => void;
   overallProgress?: number;
+  onMoodChange?: (mood: Mood, message: string) => void;
 }
 
-export default function KnowledgeCheck({ exercise, onComplete, overallProgress = 0 }: KnowledgeCheckProps) {
+export default function KnowledgeCheck({ exercise, onComplete, onMoodChange }: KnowledgeCheckProps) {
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showContinue, setShowContinue] = useState(false);
 
+  useEffect(() => {
+    onMoodChange?.('idle', 'Hmm, which one...');
+  }, [onMoodChange]);
+
   const handleSelect = (item: { value: number }) => {
     setSelectedAnswer(item.value);
     setAnswered(true);
+    const isRight = item.value === exercise.correctAnswer;
+    onMoodChange?.(isRight ? 'happy' : 'wrong', isRight ? 'You got it!' : "Don't worry!");
     setTimeout(() => setShowContinue(true), 1000);
   };
 
@@ -68,12 +76,6 @@ export default function KnowledgeCheck({ exercise, onComplete, overallProgress =
             </Box>
           </Box>
 
-          <BitBuddy
-            progress={overallProgress}
-            mood={isCorrect ? 'happy' : 'wrong'}
-            message={isCorrect ? 'You got it!' : "Don't worry, you'll get the next one!"}
-          />
-
           <Box
             marginTop={1}
             paddingX={2}
@@ -81,6 +83,11 @@ export default function KnowledgeCheck({ exercise, onComplete, overallProgress =
             borderColor={isCorrect ? 'green' : 'red'}
             flexDirection="column"
           >
+            {isCorrect ? (
+              <Text color="green" bold>{figures.tick} Correct!</Text>
+            ) : (
+              <Text color="red" bold>{figures.cross} Not quite...</Text>
+            )}
             <Text dimColor>{exercise.explanation}</Text>
             {!isCorrect && (
               <Text>

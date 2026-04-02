@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import chalk from 'chalk';
 import figures from 'figures';
-import BitBuddy from './PlantBuddy.js';
 import type { ScenarioStep } from '../lessons/types.js';
+import type { Mood } from './PlantBuddy.js';
 
 interface ScenarioExerciseProps {
   exercise: ScenarioStep;
   onComplete: () => void;
   overallProgress?: number;
+  onMoodChange?: (mood: Mood, message: string) => void;
 }
 
 function normalizeCommand(cmd: string): string {
@@ -21,7 +22,7 @@ function checkAnswer(input: string, acceptedAnswers: readonly string[]): boolean
   return acceptedAnswers.some(answer => normalizeCommand(answer) === normalized);
 }
 
-export default function ScenarioExercise({ exercise, onComplete, overallProgress = 0 }: ScenarioExerciseProps) {
+export default function ScenarioExercise({ exercise, onComplete, onMoodChange }: ScenarioExerciseProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [input, setInput] = useState('');
   const [attempts, setAttempts] = useState(0);
@@ -31,6 +32,10 @@ export default function ScenarioExercise({ exercise, onComplete, overallProgress
 
   const currentStep = exercise.steps[currentStepIndex];
   const totalSteps = exercise.steps.length;
+
+  useEffect(() => {
+    onMoodChange?.('idle', 'Walk me through it!');
+  }, [onMoodChange]);
 
   useInput((_input, key) => {
     if (done && key.return) {
@@ -50,13 +55,17 @@ export default function ScenarioExercise({ exercise, onComplete, overallProgress
 
       if (currentStepIndex + 1 >= totalSteps) {
         setDone(true);
+        onMoodChange?.('celebrate', 'Scenario complete!');
       } else {
         setCurrentStepIndex(prev => prev + 1);
+        onMoodChange?.('happy', 'Nice! Next step...');
       }
     } else {
-      setAttempts(prev => prev + 1);
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
       setShowingWrong(true);
       setInput('');
+      onMoodChange?.('wrong', newAttempts === 1 ? 'Not quite!' : 'Check the hint!');
     }
   };
 
@@ -104,12 +113,10 @@ export default function ScenarioExercise({ exercise, onComplete, overallProgress
           </Box>
 
           {showingWrong && (
-            <Box marginBottom={1}>
-              <BitBuddy
-                progress={overallProgress}
-                mood="wrong"
-                message={attempts === 1 ? 'Not quite - try again!' : 'Check the hint!'}
-              />
+            <Box marginBottom={1} paddingLeft={2}>
+              <Text color="red">
+                {figures.cross} {attempts === 1 ? 'Not quite - try again!' : 'Check the hint!'}
+              </Text>
             </Box>
           )}
 
@@ -131,11 +138,18 @@ export default function ScenarioExercise({ exercise, onComplete, overallProgress
         </>
       ) : (
         <>
-          <BitBuddy
-            progress={overallProgress}
-            mood="celebrate"
-            message={exercise.completionMessage}
-          />
+          <Box
+            marginTop={1}
+            paddingX={2}
+            borderStyle="round"
+            borderColor="green"
+            flexDirection="column"
+          >
+            <Text color="green" bold>
+              {figures.tick} Scenario Complete!
+            </Text>
+            <Text dimColor>{exercise.completionMessage}</Text>
+          </Box>
 
           <Box marginTop={1}>
             <Text dimColor>Press {chalk.cyan('Enter')} to continue...</Text>
