@@ -119,7 +119,6 @@ Returns to lesson selection with progress indicator:
 ## Try It Yourself!
 
 ```bash
-cd /home/ubuntu/clawd/git-it-together
 npm run dev
 ```
 

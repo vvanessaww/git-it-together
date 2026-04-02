@@ -67,7 +67,7 @@ Then follow the interactive lessons!
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/git-it-together.git
+git clone https://github.com/vvanessaww/git-it-together.git
 cd git-it-together
 
 # Install dependencies
