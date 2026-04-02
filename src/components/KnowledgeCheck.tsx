@@ -3,14 +3,16 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import chalk from 'chalk';
 import figures from 'figures';
+import BitBuddy from './PlantBuddy.js';
 import type { MultipleChoiceStep } from '../lessons/types.js';
 
 interface KnowledgeCheckProps {
   exercise: MultipleChoiceStep;
   onComplete: () => void;
+  overallProgress?: number;
 }
 
-export default function KnowledgeCheck({ exercise, onComplete }: KnowledgeCheckProps) {
+export default function KnowledgeCheck({ exercise, onComplete, overallProgress = 0 }: KnowledgeCheckProps) {
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showContinue, setShowContinue] = useState(false);
@@ -66,43 +68,29 @@ export default function KnowledgeCheck({ exercise, onComplete }: KnowledgeCheckP
             </Box>
           </Box>
 
-          {isCorrect ? (
-            <Box
-              marginBottom={1}
-              paddingX={2}
-              borderStyle="round"
-              borderColor="green"
-              flexDirection="column"
-            >
-              <Text color="green" bold>
-                {figures.tick} Correct!
+          <BitBuddy
+            progress={overallProgress}
+            mood={isCorrect ? 'happy' : 'wrong'}
+            message={isCorrect ? 'You got it!' : "Don't worry, you'll get the next one!"}
+          />
+
+          <Box
+            marginTop={1}
+            paddingX={2}
+            borderStyle="round"
+            borderColor={isCorrect ? 'green' : 'red'}
+            flexDirection="column"
+          >
+            <Text dimColor>{exercise.explanation}</Text>
+            {!isCorrect && (
+              <Text>
+                Correct answer: <Text bold color="green">{exercise.options[exercise.correctAnswer]}</Text>
               </Text>
-              <Text dimColor>{exercise.explanation}</Text>
-            </Box>
-          ) : (
-            <Box flexDirection="column">
-              <Box
-                marginBottom={1}
-                paddingX={2}
-                borderStyle="round"
-                borderColor="red"
-                flexDirection="column"
-              >
-                <Text color="red" bold>
-                  {figures.cross} Not quite...
-                </Text>
-                <Text dimColor>{exercise.explanation}</Text>
-              </Box>
-              <Box paddingX={2}>
-                <Text>
-                  The correct answer is: <Text bold color="green">{exercise.options[exercise.correctAnswer]}</Text>
-                </Text>
-              </Box>
-            </Box>
-          )}
+            )}
+          </Box>
 
           {showContinue && (
-            <Box marginTop={2}>
+            <Box marginTop={1}>
               <Text dimColor>Press {chalk.cyan('Enter')} to continue...</Text>
             </Box>
           )}

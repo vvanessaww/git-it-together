@@ -3,11 +3,13 @@ import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import chalk from 'chalk';
 import figures from 'figures';
+import BitBuddy from './PlantBuddy.js';
 import type { ScenarioStep } from '../lessons/types.js';
 
 interface ScenarioExerciseProps {
   exercise: ScenarioStep;
   onComplete: () => void;
+  overallProgress?: number;
 }
 
 function normalizeCommand(cmd: string): string {
@@ -19,7 +21,7 @@ function checkAnswer(input: string, acceptedAnswers: readonly string[]): boolean
   return acceptedAnswers.some(answer => normalizeCommand(answer) === normalized);
 }
 
-export default function ScenarioExercise({ exercise, onComplete }: ScenarioExerciseProps) {
+export default function ScenarioExercise({ exercise, onComplete, overallProgress = 0 }: ScenarioExerciseProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [input, setInput] = useState('');
   const [attempts, setAttempts] = useState(0);
@@ -103,9 +105,11 @@ export default function ScenarioExercise({ exercise, onComplete }: ScenarioExerc
 
           {showingWrong && (
             <Box marginBottom={1}>
-              <Text color="red">
-                {figures.cross} Not quite. Try again!
-              </Text>
+              <BitBuddy
+                progress={overallProgress}
+                mood="wrong"
+                message={attempts === 1 ? 'Not quite - try again!' : 'Check the hint!'}
+              />
             </Box>
           )}
 
@@ -127,18 +131,11 @@ export default function ScenarioExercise({ exercise, onComplete }: ScenarioExerc
         </>
       ) : (
         <>
-          <Box
-            marginTop={1}
-            paddingX={2}
-            borderStyle="round"
-            borderColor="green"
-            flexDirection="column"
-          >
-            <Text color="green" bold>
-              {figures.tick} Scenario Complete!
-            </Text>
-            <Text dimColor>{exercise.completionMessage}</Text>
-          </Box>
+          <BitBuddy
+            progress={overallProgress}
+            mood="celebrate"
+            message={exercise.completionMessage}
+          />
 
           <Box marginTop={1}>
             <Text dimColor>Press {chalk.cyan('Enter')} to continue...</Text>

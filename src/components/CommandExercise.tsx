@@ -3,11 +3,13 @@ import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import chalk from 'chalk';
 import figures from 'figures';
+import BitBuddy from './PlantBuddy.js';
 import type { CommandExerciseStep } from '../lessons/types.js';
 
 interface CommandExerciseProps {
   exercise: CommandExerciseStep;
   onComplete: () => void;
+  overallProgress?: number;
 }
 
 function normalizeCommand(cmd: string): string {
@@ -19,7 +21,7 @@ function checkAnswer(input: string, acceptedAnswers: readonly string[]): boolean
   return acceptedAnswers.some(answer => normalizeCommand(answer) === normalized);
 }
 
-export default function CommandExercise({ exercise, onComplete }: CommandExerciseProps) {
+export default function CommandExercise({ exercise, onComplete, overallProgress = 0 }: CommandExerciseProps) {
   const [input, setInput] = useState('');
   const [attempts, setAttempts] = useState(0);
   const [solved, setSolved] = useState(false);
@@ -75,9 +77,11 @@ export default function CommandExercise({ exercise, onComplete }: CommandExercis
 
           {showingWrong && (
             <Box marginBottom={1}>
-              <Text color="red">
-                {figures.cross} Not quite. Try again!
-              </Text>
+              <BitBuddy
+                progress={overallProgress}
+                mood="wrong"
+                message={attempts === 1 ? 'Not quite - try again!' : attempts === 2 ? "You're getting closer!" : 'Check the hint!'}
+              />
             </Box>
           )}
 
@@ -105,17 +109,19 @@ export default function CommandExercise({ exercise, onComplete }: CommandExercis
             </Text>
           </Box>
 
+          <BitBuddy
+            progress={overallProgress}
+            mood={attempts === 0 ? 'amazed' : 'happy'}
+            message={attempts === 0 ? 'Perfect! First try!' : attempts === 1 ? 'Nice one!' : 'Got it! Practice makes perfect.'}
+          />
+
           <Box
-            marginBottom={1}
+            marginTop={1}
             paddingX={2}
             borderStyle="round"
             borderColor="green"
             flexDirection="column"
           >
-            <Text color="green" bold>
-              {figures.tick} {attempts === 0 ? 'Perfect!' : 'Correct!'}
-              {attempts === 0 && ' First try!'}
-            </Text>
             <Text dimColor>{exercise.explanation}</Text>
           </Box>
 

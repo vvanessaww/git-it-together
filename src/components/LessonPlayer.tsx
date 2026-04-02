@@ -6,16 +6,19 @@ import KnowledgeCheck from './KnowledgeCheck.js';
 import CommandExercise from './CommandExercise.js';
 import ScenarioExercise from './ScenarioExercise.js';
 import ProgressBar from './ProgressBar.js';
+import LessonComplete from './LessonComplete.js';
 import type { Lesson } from '../lessons/types.js';
 
 interface LessonPlayerProps {
   lesson: Lesson;
   onComplete: () => void;
+  overallProgress: number;
 }
 
-export default function LessonPlayer({ lesson, onComplete }: LessonPlayerProps) {
+export default function LessonPlayer({ lesson, onComplete, overallProgress }: LessonPlayerProps) {
   const [stepIndex, setStepIndex] = useState(0);
   const [showContinue, setShowContinue] = useState(false);
+  const [finished, setFinished] = useState(false);
 
   const totalSteps = lesson.steps.length;
   const currentStep = lesson.steps[stepIndex];
@@ -36,11 +39,21 @@ export default function LessonPlayer({ lesson, onComplete }: LessonPlayerProps) 
 
   const advance = () => {
     if (stepIndex + 1 >= totalSteps) {
-      onComplete();
+      setFinished(true);
     } else {
       setStepIndex(prev => prev + 1);
     }
   };
+
+  if (finished) {
+    return (
+      <LessonComplete
+        lessonTitle={lesson.title}
+        overallProgress={overallProgress}
+        onContinue={onComplete}
+      />
+    );
+  }
 
   if (!currentStep) {
     onComplete();
@@ -54,6 +67,7 @@ export default function LessonPlayer({ lesson, onComplete }: LessonPlayerProps) 
         total={totalSteps}
         lessonTitle={lesson.title}
         difficulty={lesson.difficulty}
+        overallProgress={overallProgress}
       />
 
       {currentStep.type === 'content' && (
@@ -87,15 +101,15 @@ export default function LessonPlayer({ lesson, onComplete }: LessonPlayerProps) 
       )}
 
       {currentStep.type === 'command-exercise' && (
-        <CommandExercise exercise={currentStep} onComplete={advance} />
+        <CommandExercise key={stepIndex} exercise={currentStep} onComplete={advance} />
       )}
 
       {currentStep.type === 'multiple-choice' && (
-        <KnowledgeCheck exercise={currentStep} onComplete={advance} />
+        <KnowledgeCheck key={stepIndex} exercise={currentStep} onComplete={advance} />
       )}
 
       {currentStep.type === 'scenario' && (
-        <ScenarioExercise exercise={currentStep} onComplete={advance} />
+        <ScenarioExercise key={stepIndex} exercise={currentStep} onComplete={advance} />
       )}
     </Box>
   );
