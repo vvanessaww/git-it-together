@@ -8,7 +8,6 @@ import type { Difficulty } from '../lessons/types.js';
 
 interface LevelSelectProps {
   onSelect: (level: Difficulty) => void;
-  onBack: () => void;
   completedByLevel: Record<Difficulty, number>;
   totalByLevel: Record<Difficulty, number>;
   overallProgress: number;

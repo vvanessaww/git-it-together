@@ -1,103 +1,76 @@
-# Git It Together 🤝
+# Git It Together
 
-An interactive CLI tutorial for learning Git in AI-assisted workflows.
+An interactive CLI tutorial for learning Git in AI-assisted workflows. Type real commands, grow your git tree, and go from zero to confident with Git.
 
-## 🎯 Who is this for?
+## Why this exists?
 
-**Non-technical users** who work with AI coding tools like:
-- Claude Code / Cursor
-- GitHub Copilot
-- v0.dev / Bolt
-- Any AI pair programming tool
+After presenting at multiple AI workflow trainings at my company, I've realized people are excited about AI - they see what tools like Claude Code and Cursor can do and want to try it. But there's still a huge gap between what people want to do and what they feell like they can do.
+The biggest barrier to meaningful AI adoption that I've seen is intimidation. Using Claude Desktop to rewrite emails and summarize docs feels safe, but real-leverage tools that exist in the terminal are a roadblock.
+Existing Git tutorials are written for engineers... but the world is changing, and more people are empowered to ship than ever. 
+My vision for git-it-together is to teach the 20% of Git you'll use 80% of the time, in a gameified, fun CLI that is anything but intimidating. 
+
+## Who is this for?
+
+**Non-technical users** who work with AI coding tools like Claude Code, Cursor, GitHub Copilot, v0.dev, or Bolt.
 
 Perfect for **PMs, designers, and founders** who need to collaborate on projects but don't have a CS background.
 
-## 🚀 Why Git It Together?
+## Features
 
-AI tools like Claude Code can build entire features for you. But you still need to know:
-- ✅ How to save those changes (commits)
-- ✅ How to work on features without breaking main (branches)
-- ✅ How to handle merge conflicts
-- ✅ How to collaborate with developers
+- **Type real commands** — not multiple choice. You learn by doing.
+- **12 lessons** across 4 levels (Beginner, Intermediate, Advanced, Bonus)
+- **Grow your git tree** — a cute ASCII tree mascot that evolves as you complete lessons
+- **Contextual reactions** — the tree's face changes when you get answers right or wrong
+- **Instant feedback** — hints after wrong answers, explanations after correct ones
+- **Multi-step scenarios** — walk through full real-world workflows command by command
 
-**This tutorial teaches you the essential Git commands through real AI workflow scenarios.**
+## Lessons
 
-## 📚 What you'll learn
+### Beginner (3 lessons)
+- **After AI Makes Changes** — git status, add, commit, push
+- **Working on Features** — branches, checkout, switch
+- **Handling Merge Conflicts** — conflict markers, resolution workflow
 
-### Lesson 1: After AI Makes Changes
-Learn the exact workflow when Claude Code edits your files:
-- `git status` - see what changed
-- `git add .` - stage files
-- `git commit` - save snapshot
-- `git push` - upload to GitHub
+### Intermediate (3 lessons)
+- **Undoing Mistakes** — reset, revert, restore
+- **Stashing Work** — stash, pop, apply
+- **Rewriting History** — amend, interactive rebase
 
-**Knowledge check:** Real scenario about what to do after AI creates new files
+### Advanced (3 lessons)
+- **Recovery with Reflog** — find and recover "lost" commits
+- **Debugging with Bisect** — binary search for bugs
+- **Cherry-pick & Advanced Workflows** — cherry-pick, worktrees, tags
 
-### Lesson 2: Working on Features (Branches)
-Understand why branches matter when building with AI:
-- `git checkout -b` - create feature branch
-- `git switch` - change branches
-- `git push -u origin` - push branch to GitHub
+### Bonus (3 lessons)
+- **Branching Strategies** — naming conventions, PRs, merge vs rebase
+- **Bash Commands 101** — cd, ls, mkdir, cat, grep, and more
+- **Terminal Productivity** — keyboard shortcuts, pipes, history, chaining
 
-**Knowledge check:** When to create a new branch before asking AI to code
-
-### Lesson 3: Handling Merge Conflicts
-Don't panic when Git says "CONFLICT":
-- What merge conflicts are
-- How to resolve them
-- How to ask AI for help with conflicts
-
-**Knowledge check:** Understand what conflict markers mean
-
-## 🛠️ Installation
+## Installation
 
 ```bash
 npm install -g git-it-together
 ```
 
-## 🎮 Usage
+## Usage
 
 ```bash
 git-it-together
 ```
 
-Then follow the interactive lessons!
+Then follow the interactive lessons in your terminal.
 
-## 🧪 Development
+**Note:** Requires a terminal that supports raw mode (standard terminal emulators work fine — not piped/embedded terminals).
+
+## Development
 
 ```bash
-# Clone the repo
 git clone https://github.com/vvanessaww/git-it-together.git
 cd git-it-together
-
-# Install dependencies
 npm install
-
-# Run in dev mode
 npm run dev
-
-# Build
-npm run build
 ```
 
-## 🤔 Philosophy
-
-**AI tools can write code. You need to know how to save it.**
-
-This isn't a comprehensive Git course. It's focused on the **20% of Git commands** you'll use **80% of the time** when working with AI coding assistants.
-
-## 📝 Future Lessons (Roadmap)
-
-- [ ] Lesson 4: Pull Requests (PRs)
-- [ ] Lesson 5: Undoing Mistakes (`git reset`, `git revert`)
-- [ ] Lesson 6: Cloning Projects (`git clone`)
-- [ ] Lesson 7: Keeping Your Branch Updated (`git pull`, `git merge`)
-- [ ] Lesson 8: `.gitignore` - What not to commit
-
-## 🙏 Contributing
-
-Ideas for new lessons or better explanations? Open an issue or PR!
-
-## 📄 License
+## License
 
 MIT

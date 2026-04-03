@@ -3,6 +3,7 @@ import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import chalk from 'chalk';
 import figures from 'figures';
+import { checkAnswer } from '../utils/checkAnswer.js';
 import type { ScenarioStep } from '../lessons/types.js';
 import type { Mood } from './PlantBuddy.js';
 
@@ -11,15 +12,6 @@ interface ScenarioExerciseProps {
   onComplete: () => void;
   overallProgress?: number;
   onMoodChange?: (mood: Mood, message: string) => void;
-}
-
-function normalizeCommand(cmd: string): string {
-  return cmd.trim().replace(/\s+/g, ' ').toLowerCase();
-}
-
-function checkAnswer(input: string, acceptedAnswers: readonly string[]): boolean {
-  const normalized = normalizeCommand(input);
-  return acceptedAnswers.some(answer => normalizeCommand(answer) === normalized);
 }
 
 export default function ScenarioExercise({ exercise, onComplete, onMoodChange }: ScenarioExerciseProps) {

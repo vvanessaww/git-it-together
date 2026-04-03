@@ -3,6 +3,7 @@ import { Box, Text, useInput } from 'ink';
 import chalk from 'chalk';
 import figures from 'figures';
 import BitBuddy from './PlantBuddy.js';
+import { lessons } from '../lessons/index.js';
 
 interface WelcomeProps {
   onContinue: () => void;
@@ -91,7 +92,7 @@ export default function Welcome({ onContinue }: WelcomeProps) {
 
       <Box marginTop={1}>
         <Text bold>
-          {chalk.yellow('3 levels')} {chalk.dim('|')} {chalk.yellow('9 lessons')} {chalk.dim('|')} {chalk.yellow('Type real commands')} {chalk.dim('|')} {chalk.yellow('Grow your tree')}
+          {chalk.yellow(`${new Set(lessons.map(l => l.difficulty)).size} levels`)} {chalk.dim('|')} {chalk.yellow(`${lessons.length} lessons`)} {chalk.dim('|')} {chalk.yellow('Type real commands')} {chalk.dim('|')} {chalk.yellow('Grow your tree')}
         </Text>
       </Box>
 

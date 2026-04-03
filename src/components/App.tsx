@@ -46,6 +46,7 @@ export default function App() {
 
   const handleLevelSelect = (level: Difficulty) => {
     setSelectedLevel(level);
+    setSelectedLesson(0);
     setScreen('menu');
   };
 
@@ -74,7 +75,6 @@ export default function App() {
     return (
       <LevelSelect
         onSelect={handleLevelSelect}
-        onBack={() => setScreen('welcome')}
         completedByLevel={{
           beginner: lessons.filter(l => l.difficulty === 'beginner' && l.completed).length,
           intermediate: lessons.filter(l => l.difficulty === 'intermediate' && l.completed).length,

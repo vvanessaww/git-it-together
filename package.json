@@ -6,11 +6,13 @@
   "bin": {
     "git-it-together": "./dist/cli.js"
   },
+  "main": "./dist/cli.js",
   "scripts": {
     "dev": "tsx src/cli.tsx",
     "build": "tsc",
     "start": "node dist/cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npm run build && chmod +x dist/cli.js",
+    "test": "tsc --noEmit"
   },
   "keywords": [
     "git",

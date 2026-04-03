@@ -71,8 +71,13 @@ export default function LessonPlayer({ lesson, onComplete, onBack, overallProgre
     );
   }
 
+  React.useEffect(() => {
+    if (!currentStep && !finished) {
+      onComplete();
+    }
+  }, [currentStep, finished, onComplete]);
+
   if (!currentStep) {
-    onComplete();
     return null;
   }
 
