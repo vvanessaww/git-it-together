@@ -18,13 +18,18 @@ Perfect for **PMs, designers, and founders** who need to collaborate on projects
 ## Features
 
 - **Type real commands** — not multiple choice. You learn by doing.
-- **12 lessons** across 4 levels (Beginner, Intermediate, Advanced, Bonus)
+- **15 lessons** across 5 levels (Getting Started, Beginner, Intermediate, Advanced, Bonus)
 - **Grow your git tree** — a cute ASCII tree mascot that evolves as you complete lessons
 - **Contextual reactions** — the tree's face changes when you get answers right or wrong
 - **Instant feedback** — hints after wrong answers, explanations after correct ones
 - **Multi-step scenarios** — walk through full real-world workflows command by command
 
 ## Lessons
+
+### Getting Started (3 lessons)
+- **Cloning & Getting Started** — git clone, cd, git config, git pull
+- **.gitignore & Keeping Secrets Safe** — what never to commit, .env, rotating leaked keys
+- **Reading Project History** — git log, git blame, git show, git diff
 
 ### Beginner (3 lessons)
 - **After AI Makes Changes** — git status, add, commit, push

@@ -16,6 +16,7 @@ interface ProgressBarProps {
 }
 
 const difficultyColors: Record<Difficulty, string> = {
+  'getting-started': '#06b6d4',
   beginner: '#22c55e',
   intermediate: '#eab308',
   advanced: '#ef4444',
@@ -23,6 +24,7 @@ const difficultyColors: Record<Difficulty, string> = {
 };
 
 const difficultyLabels: Record<Difficulty, string> = {
+  'getting-started': 'Getting Started',
   beginner: 'Beginner',
   intermediate: 'Intermediate',
   advanced: 'Advanced',

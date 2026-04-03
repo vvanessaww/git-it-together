@@ -1,3 +1,6 @@
+import { lesson as gettingStarted01 } from './00-cloning-setup.js';
+import { lesson as gettingStarted02 } from './00-gitignore-secrets.js';
+import { lesson as gettingStarted03 } from './00-reading-history.js';
 import { lesson as lesson01 } from './01-ai-workflow-basics.js';
 import { lesson as lesson02 } from './02-branches-for-features.js';
 import { lesson as lesson03 } from './03-merge-conflicts.js';
@@ -13,6 +16,9 @@ import { lesson as bonus03 } from './bonus-03-terminal-productivity.js';
 import type { Lesson } from './types.js';
 
 export const lessons: Lesson[] = [
+  gettingStarted01,
+  gettingStarted02,
+  gettingStarted03,
   lesson01,
   lesson02,
   lesson03,

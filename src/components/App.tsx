@@ -13,6 +13,7 @@ import type { Difficulty, Lesson } from '../lessons/types.js';
 type Screen = 'welcome' | 'levels' | 'menu' | 'lesson';
 
 const difficultyLabels: Record<Difficulty, string> = {
+  'getting-started': chalk.cyan('Getting Started'),
   beginner: chalk.green('Beginner'),
   intermediate: chalk.yellow('Intermediate'),
   advanced: chalk.red('Advanced'),
@@ -21,7 +22,7 @@ const difficultyLabels: Record<Difficulty, string> = {
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('welcome');
-  const [selectedLevel, setSelectedLevel] = useState<Difficulty>('beginner');
+  const [selectedLevel, setSelectedLevel] = useState<Difficulty>('getting-started');
   const [selectedLesson, setSelectedLesson] = useState<number>(0);
   const [lessons, setLessons] = useState<Lesson[]>(allLessons);
 
@@ -76,12 +77,14 @@ export default function App() {
       <LevelSelect
         onSelect={handleLevelSelect}
         completedByLevel={{
+          'getting-started': lessons.filter(l => l.difficulty === 'getting-started' && l.completed).length,
           beginner: lessons.filter(l => l.difficulty === 'beginner' && l.completed).length,
           intermediate: lessons.filter(l => l.difficulty === 'intermediate' && l.completed).length,
           advanced: lessons.filter(l => l.difficulty === 'advanced' && l.completed).length,
           bonus: lessons.filter(l => l.difficulty === 'bonus' && l.completed).length,
         }}
         totalByLevel={{
+          'getting-started': lessons.filter(l => l.difficulty === 'getting-started').length,
           beginner: lessons.filter(l => l.difficulty === 'beginner').length,
           intermediate: lessons.filter(l => l.difficulty === 'intermediate').length,
           advanced: lessons.filter(l => l.difficulty === 'advanced').length,

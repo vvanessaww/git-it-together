@@ -1,4 +1,4 @@
-export type Difficulty = 'beginner' | 'intermediate' | 'advanced' | 'bonus';
+export type Difficulty = 'getting-started' | 'beginner' | 'intermediate' | 'advanced' | 'bonus';
 
 export interface ContentItem {
   title: string;

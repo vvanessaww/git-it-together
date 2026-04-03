@@ -27,6 +27,7 @@ export default function LessonPlayer({ lesson, onComplete, onBack, overallProgre
   const totalSteps = lesson.steps.length;
   const currentStep = lesson.steps[stepIndex];
 
+  // All hooks must be called before any early return
   React.useEffect(() => {
     setShowContinue(false);
     setBitMood('idle');
@@ -37,8 +38,14 @@ export default function LessonPlayer({ lesson, onComplete, onBack, overallProgre
     }
   }, [stepIndex, currentStep?.type]);
 
+  React.useEffect(() => {
+    if (!currentStep && !finished) {
+      onComplete();
+    }
+  }, [currentStep, finished, onComplete]);
+
   useInput((_input, key) => {
-    // Escape to go back to menu
+    if (finished) return;
     if (key.escape) {
       onBack();
       return;
@@ -61,6 +68,7 @@ export default function LessonPlayer({ lesson, onComplete, onBack, overallProgre
     setBitMessage(message);
   }, []);
 
+  // Early returns AFTER all hooks
   if (finished) {
     return (
       <LessonComplete
@@ -70,12 +78,6 @@ export default function LessonPlayer({ lesson, onComplete, onBack, overallProgre
       />
     );
   }
-
-  React.useEffect(() => {
-    if (!currentStep && !finished) {
-      onComplete();
-    }
-  }, [currentStep, finished, onComplete]);
 
   if (!currentStep) {
     return null;

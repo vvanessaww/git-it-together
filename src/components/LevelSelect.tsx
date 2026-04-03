@@ -24,19 +24,23 @@ export default function LevelSelect({ onSelect, completedByLevel, totalByLevel, 
 
   const items = [
     {
-      label: `${chalk.green(figures.circle)} Beginner        ${formatProgress('beginner')}  ${chalk.dim('basics: status, add, commit, push, branches')}`,
+      label: `${chalk.cyan(figures.circle)} Getting Started  ${formatProgress('getting-started')}  ${chalk.dim('setup: clone, .gitignore, reading history')}`,
+      value: 'getting-started' as Difficulty,
+    },
+    {
+      label: `${chalk.green(figures.circle)} Beginner         ${formatProgress('beginner')}  ${chalk.dim('basics: status, add, commit, push, branches')}`,
       value: 'beginner' as Difficulty,
     },
     {
-      label: `${chalk.yellow(figures.circle)} Intermediate    ${formatProgress('intermediate')}  ${chalk.dim('power tools: stash, reset, revert, rebase')}`,
+      label: `${chalk.yellow(figures.circle)} Intermediate     ${formatProgress('intermediate')}  ${chalk.dim('power tools: stash, reset, revert, rebase')}`,
       value: 'intermediate' as Difficulty,
     },
     {
-      label: `${chalk.red(figures.circle)} Advanced         ${formatProgress('advanced')}  ${chalk.dim('pro moves: reflog, bisect, cherry-pick')}`,
+      label: `${chalk.red(figures.circle)} Advanced          ${formatProgress('advanced')}  ${chalk.dim('pro moves: reflog, bisect, cherry-pick')}`,
       value: 'advanced' as Difficulty,
     },
     {
-      label: `${chalk.magenta(figures.star)} Bonus            ${formatProgress('bonus')}  ${chalk.dim('extras: bash, branching, terminal tricks')}`,
+      label: `${chalk.magenta(figures.star)} Bonus             ${formatProgress('bonus')}  ${chalk.dim('extras: bash, branching, terminal tricks')}`,
       value: 'bonus' as Difficulty,
     },
   ];
@@ -52,7 +56,7 @@ export default function LevelSelect({ onSelect, completedByLevel, totalByLevel, 
           <Text bold color="cyan">
             {figures.pointer} Choose your level:
           </Text>
-          <Text dimColor>Complete the first 3 levels to grow your tree  {chalk.magenta('|')}  Bonus lessons are just for fun</Text>
+          <Text dimColor>Complete levels to grow your tree  {chalk.magenta('|')}  Bonus lessons are just for fun</Text>
         </Box>
         <BitBuddy progress={overallProgress} mood="idle" />
       </Box>
