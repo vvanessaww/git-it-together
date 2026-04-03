@@ -16,6 +16,7 @@ const difficultyLabels: Record<Difficulty, string> = {
   beginner: chalk.green('Beginner'),
   intermediate: chalk.yellow('Intermediate'),
   advanced: chalk.red('Advanced'),
+  bonus: chalk.magenta('Bonus'),
 };
 
 export default function App() {
@@ -24,8 +25,10 @@ export default function App() {
   const [selectedLesson, setSelectedLesson] = useState<number>(0);
   const [lessons, setLessons] = useState<Lesson[]>(allLessons);
 
-  const completedCount = lessons.filter(l => l.completed).length;
-  const overallProgress = lessons.length > 0 ? completedCount / lessons.length : 0;
+  // Tree progress only counts non-bonus lessons
+  const coreLessons = lessons.filter(l => l.difficulty !== 'bonus');
+  const completedCore = coreLessons.filter(l => l.completed).length;
+  const overallProgress = coreLessons.length > 0 ? completedCore / coreLessons.length : 0;
 
   const filteredLessons = lessons.filter(l => l.difficulty === selectedLevel);
   const levelCompleted = filteredLessons.filter(l => l.completed).length;
@@ -76,11 +79,13 @@ export default function App() {
           beginner: lessons.filter(l => l.difficulty === 'beginner' && l.completed).length,
           intermediate: lessons.filter(l => l.difficulty === 'intermediate' && l.completed).length,
           advanced: lessons.filter(l => l.difficulty === 'advanced' && l.completed).length,
+          bonus: lessons.filter(l => l.difficulty === 'bonus' && l.completed).length,
         }}
         totalByLevel={{
           beginner: lessons.filter(l => l.difficulty === 'beginner').length,
           intermediate: lessons.filter(l => l.difficulty === 'intermediate').length,
           advanced: lessons.filter(l => l.difficulty === 'advanced').length,
+          bonus: lessons.filter(l => l.difficulty === 'bonus').length,
         }}
         overallProgress={overallProgress}
       />
@@ -98,6 +103,8 @@ export default function App() {
     );
   }
 
+  const isBonus = selectedLevel === 'bonus';
+
   return (
     <Box flexDirection="column" padding={1}>
       <Box justifyContent="space-between" marginBottom={1}>
@@ -107,6 +114,7 @@ export default function App() {
           </Text>
           <Text dimColor>
             {levelCompleted}/{filteredLessons.length} completed
+            {isBonus ? chalk.dim('  (does not grow your tree)') : ''}
           </Text>
         </Box>
         <BitBuddy progress={overallProgress} mood="idle" />

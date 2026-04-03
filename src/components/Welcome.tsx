@@ -9,12 +9,12 @@ interface WelcomeProps {
 }
 
 const ANIM_STAGES = [
-  { progress: 0,    label: 'Egg',              delay: 1200 },
-  { progress: 0.15, label: 'Hatched!',         delay: 800 },
-  { progress: 0.3,  label: 'Got an arm!',      delay: 800 },
-  { progress: 0.5,  label: 'Both arms!',       delay: 800 },
-  { progress: 0.8,  label: 'Full body!',       delay: 800 },
-  { progress: 1.0,  label: 'FULLY UPGRADED!',  delay: 1500 },
+  { progress: 0,    label: 'Seed',             delay: 1200 },
+  { progress: 0.15, label: 'Sprouting!',       delay: 800 },
+  { progress: 0.3,  label: 'Small tree!',      delay: 800 },
+  { progress: 0.5,  label: 'Getting tall!',    delay: 800 },
+  { progress: 0.8,  label: 'Big tree!',        delay: 800 },
+  { progress: 1.0,  label: 'FULL GROWN!',      delay: 1500 },
 ];
 
 export default function Welcome({ onContinue }: WelcomeProps) {
@@ -22,13 +22,11 @@ export default function Welcome({ onContinue }: WelcomeProps) {
   const [animStage, setAnimStage] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Start the "press enter" prompt after a short delay
   useEffect(() => {
     const timer = setTimeout(() => setReady(true), 500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Cycle through animation stages
   useEffect(() => {
     const stage = ANIM_STAGES[animStage];
     timerRef.current = setTimeout(() => {
@@ -63,9 +61,8 @@ export default function Welcome({ onContinue }: WelcomeProps) {
         </Text>
       </Box>
 
-      {/* Animated Bit evolution showcase */}
       <Box marginBottom={1} paddingX={2} paddingY={1} borderStyle="round" borderColor="gray" flexDirection="column" alignItems="center">
-        <Text dimColor>Meet {chalk.cyan('Bit')} — your bot buddy! Complete lessons to evolve Bit:</Text>
+        <Text dimColor>Meet your {chalk.green('git tree')}! Complete lessons to grow it:</Text>
         <Box marginTop={1}>
           <BitBuddy
             progress={currentAnim.progress}
@@ -75,7 +72,7 @@ export default function Welcome({ onContinue }: WelcomeProps) {
         </Box>
         <Box marginTop={0}>
           <Text dimColor>
-            {ANIM_STAGES.map((_, i) => i === animStage ? chalk.cyan('\u25cf') : chalk.gray('\u25cb')).join(' ')}
+            {ANIM_STAGES.map((_, i) => i === animStage ? chalk.green('\u25cf') : chalk.gray('\u25cb')).join(' ')}
           </Text>
         </Box>
       </Box>
@@ -94,14 +91,14 @@ export default function Welcome({ onContinue }: WelcomeProps) {
 
       <Box marginTop={1}>
         <Text bold>
-          {chalk.yellow('3 levels')} {chalk.dim('|')} {chalk.yellow('9 lessons')} {chalk.dim('|')} {chalk.yellow('Type real commands')} {chalk.dim('|')} {chalk.yellow('Grow your bot')}
+          {chalk.yellow('3 levels')} {chalk.dim('|')} {chalk.yellow('9 lessons')} {chalk.dim('|')} {chalk.yellow('Type real commands')} {chalk.dim('|')} {chalk.yellow('Grow your tree')}
         </Text>
       </Box>
 
       {ready && (
         <Box marginTop={1}>
           <Text dimColor>
-            Press {chalk.cyan('Enter')} to hatch your Bit...
+            Press {chalk.cyan('Enter')} to plant your seed...
           </Text>
         </Box>
       )}

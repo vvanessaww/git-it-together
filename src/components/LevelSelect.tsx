@@ -36,6 +36,10 @@ export default function LevelSelect({ onSelect, completedByLevel, totalByLevel, 
       label: `${chalk.red(figures.circle)} Advanced         ${formatProgress('advanced')}  ${chalk.dim('pro moves: reflog, bisect, cherry-pick')}`,
       value: 'advanced' as Difficulty,
     },
+    {
+      label: `${chalk.magenta(figures.star)} Bonus            ${formatProgress('bonus')}  ${chalk.dim('extras: bash, branching, terminal tricks')}`,
+      value: 'bonus' as Difficulty,
+    },
   ];
 
   const handleSelect = (item: { value: Difficulty }) => {
@@ -49,7 +53,7 @@ export default function LevelSelect({ onSelect, completedByLevel, totalByLevel, 
           <Text bold color="cyan">
             {figures.pointer} Choose your level:
           </Text>
-          <Text dimColor>Each level has 3 lessons with hands-on exercises</Text>
+          <Text dimColor>Complete the first 3 levels to grow your tree  {chalk.magenta('|')}  Bonus lessons are just for fun</Text>
         </Box>
         <BitBuddy progress={overallProgress} mood="idle" />
       </Box>

@@ -19,12 +19,14 @@ const difficultyColors: Record<Difficulty, string> = {
   beginner: '#22c55e',
   intermediate: '#eab308',
   advanced: '#ef4444',
+  bonus: '#a855f7',
 };
 
 const difficultyLabels: Record<Difficulty, string> = {
   beginner: 'Beginner',
   intermediate: 'Intermediate',
   advanced: 'Advanced',
+  bonus: 'Bonus',
 };
 
 export default function ProgressBar({ current, total, lessonTitle, difficulty, overallProgress, bitMood = 'idle', bitMessage = '' }: ProgressBarProps) {
